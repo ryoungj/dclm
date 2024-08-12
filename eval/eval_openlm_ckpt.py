@@ -26,6 +26,7 @@ from composer.loggers import InMemoryLogger, LoggerDestination
 from composer.trainer import Trainer
 from composer.utils import dist, get_device, reproducibility
 from llmfoundry.utils.builders import build_icl_evaluators, build_logger
+from llmfoundry.utils.config_utils import to_dict_container, to_list_container
 from omegaconf import OmegaConf as om
 from open_lm.attention import ATTN_ACTIVATIONS, ATTN_SEQ_SCALARS
 from open_lm.data import get_data
@@ -146,7 +147,7 @@ def evaluate(model, tokenizer, cfg):
     icl_tasks_w_categories = list(map(lambda x: x["label"], icl_tasks_w_categories))
 
     evaluators, logger_keys = build_icl_evaluators(
-        cfg.icl_tasks, tokenizer, cfg.max_seq_len, cfg.device_eval_batch_size
+        to_list_container(cfg.icl_tasks), tokenizer, cfg.max_seq_len, cfg.device_eval_batch_size
     )
     in_memory_logger = InMemoryLogger()  # track metrics in the in_memory_logger
     loggers: List[LoggerDestination] = [
